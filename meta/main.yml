@@ -1,2 +1,7 @@
 ---
-#defaults for main
+galaxy_info:
+   author: "Maskedman"
+   license: BSD
+   min_ansible_version: 2.0
+   categories:
+     - system
