@@ -1,7 +1,7 @@
 # osx-rsync
 ### ansible role!
 
-This role is to deploy rsync latest version on OS X computers running Yosemite and El Capitan as rsync's license prohibit's Apple from installing the latest versions of rsync into the OS.
+This role is to deploy rsync latest version on OS X computers running Yosemite and El Capitan as rsync's license prohibits Apple from installing the latest versions of rsync into the OS.
 
 ### Installation
 
