@@ -1,0 +1,74 @@
+---
+# tasks file for OS X specific
+#
+
+
+- name: Download and unpack rsync packages
+  unarchive: src=https://download.samba.org/pub/rsync/src/rsync-3.1.2.tar.gz dest=/tmp copy=no
+  tags: rsync
+
+- name: Download and unpack rsync patches
+  unarchive: src=https://download.samba.org/pub/rsync/src/rsync-patches-3.1.2.tar.gz dest=/tmp copy=no
+  tags: rsync
+
+- name: execute patch script
+  script: files/patch-rsync.sh
+  tags: rsync
+
+#- name: apply OSX specific patches to rsync -- fileflags.diff
+#  patch: >
+#    src=/tmp/rsync-3.1.2/patches/fileflags.diff
+#    dest=/tmp/rsync-3.1.2
+#    strip=1
+#  tags: rsync
+
+#- name: apply OSX specific patches to rsync -- crtimes.diff
+#  patch: >
+#    src=/tmp/rsync-3.2.1/patches/crtimes.diff
+#    dest=/tmp/rsync-3.2.1
+#    strip=1
+#  tags: rsync
+
+#- name: apply OSX specific patches to rsync -- hfs-compression
+#  patch: >
+#    src=/tmp/rsync-3.2.1/patches/hfs-compression.diff
+#    dest=/tmp/rsync-3.2.1
+#    strip=1
+#  tags: rsync
+
+- name: compile & install rsync 3.1.2 with patches
+  command: "{{ item }}"
+  args:
+    chdir: /tmp/rsync-3.1.2
+  with_items:
+        - ./prepare-source 
+        - ./configure
+        - make 
+        - make install
+  tags: rsync
+
+- name: remove old rsync files
+  file: >
+        path=/usr/bin/rsync
+        state=absent
+  tags: rsync
+
+- name: symlink new rsync from /usr/local/bin/rsync to /usr/bin/rsync
+  file: >
+        src=/usr/local/bin/rsync
+        dest=/usr/bin/rsync
+        owner=root
+        group=wheel
+        mode=755
+        state=link
+  tags: rsync
+
+- name: cleanup tmp
+  file: path=/tmp/rsync-3.1.2 state=absent
+  tags: rsync
+
+- name: cleanup patch-rsync.sh
+  file: path=/tmp/patch-rsync.sh state=absent
+  tags: rsync
+
+
